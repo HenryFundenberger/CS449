@@ -5,8 +5,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import RIGHT, ttk
 from tkinter import messagebox
-from main import App
-import pytest
+from GUI import App
+import GUI
 
 #extends the App class to test the functions
 class NewTestApp(App):
