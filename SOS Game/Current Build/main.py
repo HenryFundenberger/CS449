@@ -76,7 +76,7 @@ class App(tk.Tk):
             for column in range(8):
                 #Remove Space between buttons
                 self.frame.columnconfigure(column, weight=2)
-                button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked)
+                button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked(row,column))
                 button.grid(row=row, column=column, padx=0, pady=0)
 
 
@@ -139,11 +139,12 @@ class App(tk.Tk):
         self.reset_button.grid(row=10, column=10, padx=0, pady=0)
 
 
-    def clicked(self):
+    def clicked(self,x,y):
         #Get Clicked Button
         button = self.focus_get()
         # Get Button Row and Column
-        
+        print(x)
+        print(y)
         #Current Player
         player = self.Player
         self.gameMode = self.game_mode_var.get()

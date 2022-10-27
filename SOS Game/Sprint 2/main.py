@@ -10,6 +10,10 @@ from tkinter import messagebox
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        style = ttk.Style()
+        style.theme_use('alt')
+        style.configure('TButton', background = 'white', foreground = 'black', width = 20, borderwidth=1, focusthickness=3, focuscolor='none')
+        style.map('TButton', background=[('active','black')], forground=[('active','white')])
         self.title("SOS Game - Henry Fundenberger")
         self.geometry("450x600")
         self.resizable(True, True)
@@ -142,8 +146,9 @@ class App(tk.Tk):
     def clicked(self):
         #Get Clicked Button
         button = self.focus_get()
-        # Get Button Row and Column
-        
+        row = button.grid_info()["row"]
+        column = button.grid_info()["column"]
+
         #Current Player
         player = self.Player
         self.gameMode = self.game_mode_var.get()
@@ -154,6 +159,7 @@ class App(tk.Tk):
             #Change Player to 2
             self.Player = 2
             self.updateCurrentPlayerText()
+            #update button text color to be red
         elif player == 2 and button["text"] == " ":
             #Change Button Text to Player 2's Choice
             button.config(text=self.player2_var.get())
