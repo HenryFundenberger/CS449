@@ -1,15 +1,19 @@
-from cgitb import text
+
 from select import select
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import RIGHT, ttk
 from tkinter import messagebox
-
+from board import Board
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        style = ttk.Style()
+        style.theme_use('alt')
+        style.configure('TButton', background = 'white', foreground = 'black', width = 20, borderwidth=1, focusthickness=3, focuscolor='none')
+        style.map('TButton', background=[('active','black')], forground=[('active','white')])
         self.title("SOS Game - Henry Fundenberger")
         self.geometry("450x600")
         self.resizable(True, True)
@@ -23,6 +27,7 @@ class App(tk.Tk):
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Player 1")
         # Update Icon for Window
         self.iconbitmap("SOS.ico")
+        self.board = Board(self.board_size)
 
         self.create_widgets()
 
@@ -76,7 +81,7 @@ class App(tk.Tk):
             for column in range(8):
                 #Remove Space between buttons
                 self.frame.columnconfigure(column, weight=2)
-                button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked(row,column))
+                button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked)
                 button.grid(row=row, column=column, padx=0, pady=0)
 
 
@@ -137,34 +142,46 @@ class App(tk.Tk):
         self.Player = 1
         self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
         self.reset_button.grid(row=10, column=10, padx=0, pady=0)
+        self.board.resetBoard(self.board_size)
 
 
-    def clicked(self,x,y):
+    def clicked(self):
         #Get Clicked Button
         button = self.focus_get()
-        # Get Button Row and Column
-        print(x)
-        print(y)
+        row = button.grid_info()["row"]
+        column = button.grid_info()["column"]
+
+        #Board Object print board method
+
+
+
         #Current Player
         player = self.Player
         self.gameMode = self.game_mode_var.get()
         print(self.gameMode)
-        if player == 1 and button["text"] == " ":
+        print("=====================================")
+        x = self.board.getPiece(row, column)
+        print(x)
+        print("=====================================")
+        if player == 1 and self.board.getPiece(row,column) == "":
             #Change Button Text to Player 1's Choice
             button.config(text=self.player1_var.get())
+            self.board.placePiece(row, column, self.player1_var.get(), player)
             #Change Player to 2
             self.Player = 2
             self.updateCurrentPlayerText()
+            #update button text color to be red
         elif player == 2 and button["text"] == " ":
             #Change Button Text to Player 2's Choice
             button.config(text=self.player2_var.get())
             #Change Player to 1
+            self.board.placePiece(row, column, self.player2_var.get(), player)
             self.Player = 1
             self.updateCurrentPlayerText()
         else:
             messagebox.showerror("Error", "Button already clicked")
         
-
+        print(self.board.getPiece(row, column))
 
 
     def update_board_size(self, event):
@@ -198,6 +215,7 @@ class App(tk.Tk):
         self.Player = 1
         self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
         self.reset_button.grid(row=10, column=10, padx=0, pady=0)
+        self.board.resetBoard(self.board_size)
 
 
 
