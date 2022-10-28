@@ -17,7 +17,6 @@ class App(tk.Tk):
         self.title("SOS Game - Henry Fundenberger")
         self.Player = 1
         self.board_size = 5
-        self.gameMode = "simple"
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Player 1")
         # Update Icon for Window
         self.iconbitmap( 'SOS.ico')
@@ -25,10 +24,10 @@ class App(tk.Tk):
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
 
-        self.create_widgets()
+        self.buildMainGame()
 
 
-    def create_widgets(self):
+    def buildMainGame(self):
         # Create frame for Board Title and widgets
         self.board_frame = tk.Frame(self)
         self.board_frame.pack(pady=10)
@@ -56,13 +55,13 @@ class App(tk.Tk):
         #Include 2 radio buttons one labeled simple and one labeled general
         #And reset the board when the radio button is clicked
         self.game_mode_var = tk.StringVar()
-        self.game_mode_var.set("simple")
+        self.game_mode_var.set("Simple")
         self.game_mode_frame.pack(pady=10)
         self.game_mode_label = tk.Label(self.game_mode_frame, text="Game Mode: ")
         self.game_mode_label.grid(row=0, column=0, padx=0, pady=0)
-        self.game_mode_simple = tk.Radiobutton(self.game_mode_frame, text="Simple", variable=self.game_mode_var, value="simple", command=self.reset)
+        self.game_mode_simple = tk.Radiobutton(self.game_mode_frame, text="Simple", variable=self.game_mode_var, value="Simple", command=self.reset)
         self.game_mode_simple.grid(row=0, column=1, padx=0, pady=0)
-        self.game_mode_general = tk.Radiobutton(self.game_mode_frame, text="General", variable=self.game_mode_var, value="general", command=self.reset)
+        self.game_mode_general = tk.Radiobutton(self.game_mode_frame, text="General", variable=self.game_mode_var, value="General", command=self.reset)
         self.game_mode_general.grid(row=0, column=2, padx=0, pady=0)
 
 
@@ -114,10 +113,7 @@ class App(tk.Tk):
 
     def updateCurrentPlayerText(self):
         #Update Current Player Text
-        if self.Player == 1:
-            self.CurrentPlayerLabel.config(text="Playing: Player 1")
-        else:
-            self.CurrentPlayerLabel.config(text="Playing: Player 2")
+        self.CurrentPlayerLabel.config(text="Playing: Player " + str(self.Player))
 
     def reset(self):
         #Reset Board
@@ -134,10 +130,12 @@ class App(tk.Tk):
                 button.grid(row=row, column=column, padx=0, pady=0)
         #Reset Player to 1
         self.Player = 1
+        self.updateCurrentPlayerText()
         self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
         self.reset_button.grid(row=10, column=10, padx=0, pady=0)
         self.board.resetBoard(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
+        self.board.updateGameMode(self.game_mode_var.get())
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
 
 
@@ -147,25 +145,23 @@ class App(tk.Tk):
         row = button.grid_info()["row"]
         column = button.grid_info()["column"]
 
-        #Current Player
-        player = self.Player
         self.gameMode = self.game_mode_var.get()
-        print(self.gameMode)
-        if player == 1 and self.board.getPiece(row,column) == "":
+        print(self.board.gameMode)
+        if self.Player == 1 and self.board.getPiece(row,column) == "":
             token = self.player1_var.get()
             #Change Button Text to Player 1's Choice
             button.config(text=self.player1_var.get())
-            self.board.placePiece(row, column, token, player)
+            self.board.placePiece(row, column, token, self.Player)
             #Change Player to 2
             self.Player = 2
             self.updateCurrentPlayerText()
             #update button text color to be red
-        elif player == 2 and button["text"] == " ":
+        elif self.Player == 2 and button["text"] == " ":
             token = self.player2_var.get()
             #Change Button Text to Player 2's Choice
             button.config(text=self.player2_var.get())
             #Change Player to 1
-            self.board.placePiece(row, column, self.player2_var.get(), player)
+            self.board.placePiece(row, column, self.player2_var.get(), self.Player)
             self.Player = 1
             self.updateCurrentPlayerText()
         else:
@@ -177,8 +173,6 @@ class App(tk.Tk):
 
 
     def update_board_size(self, event):
-        # If board size > 10, set to 10
-        # Display pop up error message
         tempBoardSize = self.board_size_entry.get()
         self.board_size, errorMessage = self.board.updateBoardSize(tempBoardSize)
         if errorMessage != "":

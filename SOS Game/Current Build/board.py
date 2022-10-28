@@ -14,6 +14,13 @@ class Board:
         self.openSpaces = self.boardSize * self.boardSize
         self.player1Points = 0
         self.player2Points = 0
+        self.gameMode = "Simple"
+
+
+    def updateGameMode(self, newMode):
+        if newMode == "Simple" or newMode == "General":
+            self.gameMode = newMode
+        return self.gameMode    
 
     def getWindowSize(self, boardSize):
         #Dictionary for boardSizes 3 - 10 that hold a list of width and height for the window
@@ -34,6 +41,8 @@ class Board:
     def placePiece(self, row, column, piece, player):
         # If space is out of bounds, return false
         if row < 0 or row >= self.boardSize or column < 0 or column >= self.boardSize:
+            return False
+        elif self.board[row][column] != "":
             return False
         else:
             self.board[row][column] = [piece, player]
@@ -63,6 +72,13 @@ class Board:
 
     def updateBoardSize(self, newSize):
         errorMessage = ""
+        
+        # if input is not a number, return error message
+        if not newSize.isdigit():
+            errorMessage = "Please enter a valid number"
+            return self.boardSize, errorMessage
+
+
         if int(newSize) > 10:
             errorMessage = "Board size cannot be greater than 10"
             newSize = 10
