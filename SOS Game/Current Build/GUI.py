@@ -15,19 +15,15 @@ class App(tk.Tk):
         style.configure('TButton', background = 'white', foreground = 'black', width = 20, borderwidth=1, focusthickness=3, focuscolor='none')
         style.map('TButton', background=[('active','black')], forground=[('active','white')])
         self.title("SOS Game - Henry Fundenberger")
-        self.geometry("450x600")
-        self.resizable(True, True)
         self.Player = 1
-        self.board_size = 8
-        self.player1Points = 0
-        self.player2Points = 0
-        self.testVar = False
+        self.board_size = 5
         self.gameMode = "simple"
-        self.minY = 400
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Player 1")
         # Update Icon for Window
-        self.iconbitmap("SOS.ico")
+        self.iconbitmap( 'SOS.ico')
         self.board = Board(self.board_size)
+        self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
+        self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
 
         self.create_widgets()
 
@@ -77,8 +73,8 @@ class App(tk.Tk):
         self.frame.pack(pady=10)
 
         #Create 8x8 grid of buttons in frame
-        for row in range(8):
-            for column in range(8):
+        for row in range(self.board_size):
+            for column in range(self.board_size):
                 #Remove Space between buttons
                 self.frame.columnconfigure(column, weight=2)
                 button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked)
@@ -132,8 +128,6 @@ class App(tk.Tk):
         for row in range(self.board_size):
             for column in range(self.board_size):
                 #Remove Space between buttons
-                
-
                 self.frame.columnconfigure(column, weight=2)
                 # Add blue background to buttons
                 button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked)
@@ -143,6 +137,8 @@ class App(tk.Tk):
         self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
         self.reset_button.grid(row=10, column=10, padx=0, pady=0)
         self.board.resetBoard(self.board_size)
+        self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
+        self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
 
 
     def clicked(self):
@@ -151,27 +147,21 @@ class App(tk.Tk):
         row = button.grid_info()["row"]
         column = button.grid_info()["column"]
 
-        #Board Object print board method
-
-
-
         #Current Player
         player = self.Player
         self.gameMode = self.game_mode_var.get()
         print(self.gameMode)
-        print("=====================================")
-        x = self.board.getPiece(row, column)
-        print(x)
-        print("=====================================")
         if player == 1 and self.board.getPiece(row,column) == "":
+            token = self.player1_var.get()
             #Change Button Text to Player 1's Choice
             button.config(text=self.player1_var.get())
-            self.board.placePiece(row, column, self.player1_var.get(), player)
+            self.board.placePiece(row, column, token, player)
             #Change Player to 2
             self.Player = 2
             self.updateCurrentPlayerText()
             #update button text color to be red
         elif player == 2 and button["text"] == " ":
+            token = self.player2_var.get()
             #Change Button Text to Player 2's Choice
             button.config(text=self.player2_var.get())
             #Change Player to 1
@@ -181,49 +171,17 @@ class App(tk.Tk):
         else:
             messagebox.showerror("Error", "Button already clicked")
         
-        print(self.board.getPiece(row, column))
+
+        if self.board.noOpenSpaces():
+            messagebox.showinfo("Game Over", "Game Over")
 
 
     def update_board_size(self, event):
         # If board size > 10, set to 10
         # Display pop up error message
-        if int(self.board_size_entry.get()) > 10:
-            messagebox.showerror("Error", "Board sizes much greater than 10 cause errors, please enter 10 or less")
-            self.board_size = 10
-        elif int(self.board_size_entry.get()) < 3:
-            messagebox.showerror("Error", "Board size must be greater than or equal to 3")
-            self.board_size = 3
-        else:
-            self.board_size = int(self.board_size_entry.get())
-
-        #Delete all buttons
-        for widget in self.frame.winfo_children():
-            widget.destroy()
-        #Create new buttons
-        for row in range(self.board_size):
-            for column in range(self.board_size):
-                #Remove Space between buttons
-                self.frame.columnconfigure(column, weight=2)
-                # Add blue background to buttons
-                button = ttk.Button(self.frame, text=" ", width=3, command=self.clicked)
-                button.grid(row=row, column=column, padx=0, pady=0)
-        # Update Window Size
-        self.geometry(str(self.board_size * 55) + "x" + str(self.minY))
-        # Keep Y size constant
-        self.minsize(str(self.board_size * 55), self.minY)
-        #Reset Player to 1
-        self.Player = 1
-        self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
-        self.reset_button.grid(row=10, column=10, padx=0, pady=0)
-        self.board.resetBoard(self.board_size)
-
-
-
-
-
-
-#Main SECTION
-#-----------------------------------------------------------------------------------------------------------------------
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+        tempBoardSize = self.board_size_entry.get()
+        self.board_size, errorMessage = self.board.updateBoardSize(tempBoardSize)
+        if errorMessage != "":
+            messagebox.showerror("Error", errorMessage)
+        self.reset()
+        

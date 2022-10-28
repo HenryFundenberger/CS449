@@ -7,6 +7,7 @@ from tkinter import RIGHT, ttk
 from tkinter import messagebox
 from GUI import App
 import GUI
+from board import Board
 
 #extends the App class to test the functions
 class NewTestApp(App):
