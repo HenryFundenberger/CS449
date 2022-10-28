@@ -88,6 +88,3 @@ class Board:
         self.boardSize = newSize
         self.resetBoard(int(self.boardSize))
         return self.boardSize, errorMessage
-
-
-        
