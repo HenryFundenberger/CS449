@@ -6,7 +6,7 @@ from tkinter import ttk
 from tkinter import RIGHT, ttk
 from tkinter import messagebox
 from turtle import update
-
+from GUI import App
 from board import Board
 
 
@@ -66,3 +66,6 @@ def test_MakeInvalidGeneralGameMove():
     test.board.placePiece(0, 0, "O", 2)
     assert test.board.getPiece(0, 0)[0] == "S" and test.board.gameMode == "General" and test.board.getPiece(0, 0)[1] == 1
 
+def test_StartGame():
+    testApp = App()
+    assert testApp.gameStarted == True

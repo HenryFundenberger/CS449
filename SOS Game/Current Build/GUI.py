@@ -1,3 +1,12 @@
+# Henry Fundenberger
+# Student ID: 16251041
+# CS 449
+
+'''
+This is the GUI file for the SOS game. It contains the GUI class, which builds the visual interface for the game.
+It refernces the board class for the game logic but also has some of its own logic for the GUI.
+'''
+
 
 from select import select
 from tkinter import *
@@ -23,7 +32,7 @@ class App(tk.Tk):
         self.board = Board(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
-
+        self.gameStarted = True
         self.buildMainGame()
 
 
