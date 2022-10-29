@@ -31,7 +31,7 @@ class App(tk.Tk):
         self.iconbitmap( 'SOS.ico')
         self.board = Board(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
-        self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
+        self.geometry(str(self.boardWidth) + "x250" )
         self.frameList = []
         self.buildStartMenu()
 
@@ -43,13 +43,19 @@ class App(tk.Tk):
         self.start_menu_frame = tk.Frame(self)
         self.frameList.append(self.start_menu_frame)
         #Slider from 3 to 10
-        self.board_size_slider = tk.Scale(self.start_menu_frame, from_=3, to=10, orient=HORIZONTAL, label="Board Size")
+        # Label that says "Choose a board size"
+        self.board_size_label = tk.Label(self.start_menu_frame, text="Choose a board size")
+        self.board_size_slider = tk.Scale(self.start_menu_frame, from_=3, to=10, orient=HORIZONTAL, label="")
         self.board_size_slider.grid(row=0, column=0, padx=0, pady=0)
         #Game Mode
         self.game_mode_var = tk.StringVar()
         self.game_mode_var.set("None")
         self.game_mode_label = tk.Label(self.start_menu_frame, text="Game Mode")
         self.game_mode_label.grid(row=1, column=0, padx=0, pady=0)
+        # help menu question mark
+        self.help_button = tk.Button(self.start_menu_frame, text="?", command=self.buildHelpMenu)
+        self.help_button.grid(row=1, column=1, padx=0, pady=0)
+
         self.game_mode_radio1 = tk.Radiobutton(self.start_menu_frame, text="Simple", variable=self.game_mode_var, value="Simple")
         self.game_mode_radio1.grid(row=2, column=0, padx=0, pady=0)
         self.game_mode_radio2 = tk.Radiobutton(self.start_menu_frame, text="General", variable=self.game_mode_var, value="General")
@@ -66,15 +72,53 @@ class App(tk.Tk):
         self.start_menu_frame.pack()
 
 
+    def buildHelpMenu(self):
+            #create new window
+            self.help_window = tk.Toplevel(self)
+            self.help_window.title("Help")
+            self.help_window.geometry("200x300")
+            self.help_window.iconbitmap( 'SOS.ico')
+            
+            # Help Menu Frame
+            self.help_menu_frame = tk.Frame(self.help_window)
+            self.help_menu_frame.pack()
+            self.frameList.append(self.help_menu_frame)
+            # Help Menu Text
+            self.help_menu_text = tk.Label(self.help_menu_frame, text="This is the help menu")
+            self.help_menu_text.grid(row=0, column=0, padx=0, pady=0)
+            # Simple Game Mode Help Label
+            self.simple_game_mode_help_label = tk.Label(self.help_menu_frame, text="Simple Game Mode Instructions")
+            self.simple_game_mode_help_label.grid(row=1, column=0, padx=0, pady=0)
+            # make text wrap
+            self.seperator = ttk.Separator(self.help_menu_frame, orient=HORIZONTAL)
+            self.seperator.grid(row=2, column=0, padx=0, pady=0)
+            self.simple_game_mode_help_text = tk.Label(self.help_menu_frame, text="In a simple game, users take turn placing down their S or O token on the board. If a player places down a token and creates a SOS in any direction, they get a point. The winner of the game is the first player to make an SOS.", wraplength=200)
+            self.simple_game_mode_help_text.grid(row=2, column=0, padx=0, pady=0)
+
+            # General Game Mode Help Label
+            self.general_game_mode_help_label = tk.Label(self.help_menu_frame, text="General Game Mode Instructions")
+            self.general_game_mode_help_label.grid(row=3, column=0, padx=0, pady=0)
+            # make text wrap
+            self.seperator = ttk.Separator(self.help_menu_frame, orient=HORIZONTAL)
+            self.seperator.grid(row=4, column=0, padx=0, pady=0)
+            self.general_game_mode_help_text = tk.Label(self.help_menu_frame, text="In a general game, users take turn placing down their S or O token on the board. When all the positions on the board have been filled by a token, the winner of the game is whoever made the most SOS's and obtained the most points.", wraplength=200)
+            self.general_game_mode_help_text.grid(row=4, column=0, padx=0, pady=0)
+
+
+
+            # Help Menu Close Button
+            self.help_menu_close_button = tk.Button(self.help_menu_frame, text="Close", command=self.help_window.destroy)
+            self.help_menu_close_button.grid(row=5, column=0, padx=0, pady=0)
 
 
     def buildMainGame(self):
         # Delete Start Menu
         self.board_size = self.board_size_slider.get()
-     
+
         self.board.updateBoardSize(str(self.board_size))
         # Get game mode
-        
+        if self.game_mode_var.get() == "None":
+            self.game_mode_var.set("Simple")
         # delete all frames in frameList
         for frame in self.frameList:
             frame.destroy()
@@ -100,7 +144,6 @@ class App(tk.Tk):
         #Include 2 radio buttons one labeled simple and one labeled general
         #And reset the board when the radio button is clicked
         self.game_mode_var.set(self.game_mode_var.get())
-        print(self.game_mode_var.get())
         self.game_mode_frame.pack(pady=10)
         self.game_mode_label = tk.Label(self.game_mode_frame, text="Game Mode: ")
         self.game_mode_label.grid(row=0, column=0, padx=0, pady=0)
@@ -156,6 +199,8 @@ class App(tk.Tk):
     def updateCurrentPlayerText(self):
         #Update Current Player Text
         self.CurrentPlayerLabel.config(text="Playing: Player " + str(self.Player))
+
+
     def reset(self):
         #Reset Board
         #Delete all buttons
@@ -178,6 +223,7 @@ class App(tk.Tk):
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
         self.board.updateGameMode(self.game_mode_var.get())
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
+
         
         
 
@@ -188,7 +234,6 @@ class App(tk.Tk):
         column = button.grid_info()["column"]
         self.gameMode = self.game_mode_var.get()
         self.board.gameMode = self.gameMode
-        print(self.board.gameMode)
         if self.Player == 1 and self.board.getPiece(row,column) == "":
             token = self.player1_var.get()
             #Change Button Text to Player 1's Choice
@@ -198,7 +243,7 @@ class App(tk.Tk):
             self.Player = 2
             self.updateCurrentPlayerText()
             #update button text color to be red
-        elif self.Player == 2 and button["text"] == " ":
+        elif self.Player == 2 and self.board.getPiece(row,column) == "":
             token = self.player2_var.get()
             #Change Button Text to Player 2's Choice
             button.config(text=self.player2_var.get())
@@ -211,7 +256,7 @@ class App(tk.Tk):
         if self.board.noOpenSpaces():
             messagebox.showinfo("Game Over", "Game Over")
 
-        self.board.printBoard()
+
 
 
     def update_board_size(self, event):
