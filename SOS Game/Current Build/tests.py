@@ -9,12 +9,10 @@ from turtle import update
 from GUI import App
 from board import Board
 
-
 # Test class that inherits from the Board class
 class UnitTestClass:
     def __init__(self,size):
         self.board = Board(size)
-
         
 def test_ChooseBoardSize():
     test = UnitTestClass(3)
@@ -68,4 +66,4 @@ def test_MakeInvalidGeneralGameMove():
 
 def test_StartGame():
     testApp = App()
-    assert testApp.gameStarted == True
+    assert testApp.gameStarted == True and testApp.board.board != []

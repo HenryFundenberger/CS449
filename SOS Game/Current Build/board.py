@@ -24,9 +24,9 @@ class Board:
 
     def getWindowSize(self, boardSize):
         #Dictionary for boardSizes 3 - 10 that hold a list of width and height for the window
-        myDict = {3: [280, 450], 4: [280, 450], 5: [320, 500], 6: [330, 520], 7: [385, 526], 8: [440, 550], 9: [495, 560], 10: [550, 620]}
-        width = myDict[boardSize][0]
-        height = myDict[boardSize][1]
+        windowSizeDict = {3: [280, 450], 4: [280, 450], 5: [320, 500], 6: [330, 520], 7: [385, 526], 8: [440, 550], 9: [495, 560], 10: [550, 620]}
+        width = windowSizeDict[boardSize][0]
+        height = windowSizeDict[boardSize][1]
         return [width, height]
 
     #Create board from lists of lists
