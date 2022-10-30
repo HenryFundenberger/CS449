@@ -51,21 +51,22 @@ class App(tk.Tk):
         #Slider from 3 to 10
         # Label that says "Choose a board size"
         self.board_size_label = tk.Label(self.start_menu_frame, text="Choose a board size")
+        self.board_size_label.grid(row=0, column=0, padx=0, pady=0)
         self.board_size_slider = tk.Scale(self.start_menu_frame, from_=3, to=10, orient=HORIZONTAL, label="")
-        self.board_size_slider.grid(row=0, column=0, padx=0, pady=0)
+        self.board_size_slider.grid(row=1, column=0, padx=0, pady=0)
         #Game Mode
         self.game_mode_var = tk.StringVar()
         self.game_mode_var.set("None")
         self.game_mode_label = tk.Label(self.start_menu_frame, text="Game Mode")
-        self.game_mode_label.grid(row=1, column=0, padx=0, pady=0)
+        self.game_mode_label.grid(row=2, column=0, padx=0, pady=0)
         # help menu question mark
         self.help_button = tk.Button(self.start_menu_frame, text="?", command=self.buildHelpMenu)
-        self.help_button.grid(row=1, column=1, padx=0, pady=0)
+        self.help_button.grid(row=2, column=1, padx=0, pady=0)
 
         self.game_mode_radio1 = tk.Radiobutton(self.start_menu_frame, text="Simple", variable=self.game_mode_var, value="Simple")
-        self.game_mode_radio1.grid(row=2, column=0, padx=0, pady=0)
+        self.game_mode_radio1.grid(row=3, column=0, padx=0, pady=0)
         self.game_mode_radio2 = tk.Radiobutton(self.start_menu_frame, text="General", variable=self.game_mode_var, value="General")
-        self.game_mode_radio2.grid(row=3, column=0, padx=0, pady=0)
+        self.game_mode_radio2.grid(row=4, column=0, padx=0, pady=0)
 
 
         # Get board size slider value
