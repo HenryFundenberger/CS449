@@ -15,6 +15,7 @@ class Board:
         self.player1Points = 0
         self.player2Points = 0
         self.gameMode = "Simple"
+        
 
 
     def updateGameMode(self, newMode):
