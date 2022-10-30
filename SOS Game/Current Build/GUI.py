@@ -19,20 +19,26 @@ from board import Board
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        # Sets the style of the GUI
         style = ttk.Style()
         style.theme_use('alt')
         style.configure('TButton', background = 'white', foreground = 'black', width = 20, borderwidth=1, focusthickness=3, focuscolor='none')
         style.map('TButton', background=[('active','black')], forground=[('active','white')])
         self.title("SOS Game - Henry Fundenberger")
+
+        
         self.Player = 1
         self.board_size = 5
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Player 1")
-        # Update Icon for Window
         self.iconbitmap( 'SOS.ico')
+        # Our board object refernce to control the game logic
         self.board = Board(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
+        # Geometry for start window 
         self.geometry(str(self.boardWidth) + "x250" )
+        # List to keep track of frames so they can be destroyed when switching between menus
         self.frameList = []
+        # First build the start menu
         self.buildStartMenu()
 
 
