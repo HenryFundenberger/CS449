@@ -66,4 +66,11 @@ def test_MakeInvalidGeneralGameMove():
 
 def test_StartGame():
     testApp = App()
-    assert testApp.gameStarted == True and testApp.board.board != []
+    testApp.board_size_slider.set(5)
+    testApp.game_mode_var.set("General")
+    testApp.after(1000, lambda: testApp.start_button.invoke())
+    testApp.after(2000, lambda: testApp.destroy())
+    testApp.mainloop()
+    assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 5 and testApp.board.gameMode == "General"
+
+

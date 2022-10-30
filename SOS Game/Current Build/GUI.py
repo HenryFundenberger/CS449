@@ -26,7 +26,7 @@ class App(tk.Tk):
         style.map('TButton', background=[('active','black')], forground=[('active','white')])
         self.title("SOS Game - Henry Fundenberger")
 
-        self.gameStarted = True
+        self.gameStarted = False
         self.Player = 1
         self.board_size = 5
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Player 1")
@@ -118,6 +118,7 @@ class App(tk.Tk):
 
 
     def buildMainGame(self):
+        self.gameStarted = True
         # Delete Start Menu
         self.board_size = self.board_size_slider.get()
 
