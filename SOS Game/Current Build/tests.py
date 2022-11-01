@@ -1,4 +1,4 @@
-from cgitb import text
+
 from select import select
 from tkinter import *
 import tkinter as tk
@@ -20,6 +20,7 @@ def test_ChooseBoardSize():
     value = test.board.updateBoardSize(str(updateValue))[0]
     test.board.placePiece(value-1, value-1, "X", 1)
     assert test.board.getPiece(9, 9)[0] == "X" and test.board.boardSize == 10
+
 
 def test_ChooseInvalidBoardSize():
     test = UnitTestClass(3)

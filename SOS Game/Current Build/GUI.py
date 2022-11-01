@@ -236,10 +236,14 @@ class App(tk.Tk):
         
 
     def clicked(self):
+
         #Get Clicked Button
         button = self.focus_get()
+        # Change buttons type to not be a TButton
+
         row = button.grid_info()["row"]
         column = button.grid_info()["column"]
+
         self.gameMode = self.game_mode_var.get()
         self.board.gameMode = self.gameMode
         if self.Player == 1 and self.board.getPiece(row,column) == "":
@@ -263,6 +267,9 @@ class App(tk.Tk):
             messagebox.showerror("Error", "Button already clicked")
         if self.board.noOpenSpaces():
             messagebox.showinfo("Game Over", "Game Over")
+
+
+
 
 
 
