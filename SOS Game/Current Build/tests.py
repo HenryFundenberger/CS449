@@ -1,4 +1,3 @@
-
 from select import select
 from tkinter import *
 import tkinter as tk
@@ -65,7 +64,7 @@ def test_MakeInvalidGeneralGameMove():
     test.board.placePiece(0, 0, "O", 2)
     assert test.board.getPiece(0, 0)[0] == "S" and test.board.gameMode == "General" and test.board.getPiece(0, 0)[1] == 1
 
-def test_StartGame():
+def test_StartGeneralGame():
     testApp = App()
     testApp.board_size_slider.set(5)
     testApp.game_mode_var.set("General")
@@ -74,4 +73,11 @@ def test_StartGame():
     testApp.mainloop()
     assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 5 and testApp.board.gameMode == "General"
 
-
+def test_StartSimpleGame():
+    testApp = App()
+    testApp.board_size_slider.set(11)
+    testApp.game_mode_var.set("Simple")
+    testApp.after(100, lambda: testApp.start_button.invoke())
+    testApp.after(200, lambda: testApp.destroy())
+    testApp.mainloop()
+    assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 10 and testApp.board.gameMode == "Simple"
