@@ -57,10 +57,10 @@ class App(tk.Tk):
         #Game Mode
         self.game_mode_var = tk.StringVar()
         self.game_mode_var.set("None")
-        self.game_mode_label = tk.Label(self.start_menu_frame, text="Game Mode")
+        self.game_mode_label = tk.Label(self.start_menu_frame, text="Choose a Game Mode")
         self.game_mode_label.grid(row=2, column=0, padx=0, pady=0)
         # help menu question mark
-        self.help_button = tk.Button(self.start_menu_frame, text="?", command=self.buildHelpMenu)
+        self.help_button = tk.Button(self.start_menu_frame, text=" ? ", command=self.buildHelpMenu)
         self.help_button.grid(row=2, column=1, padx=0, pady=0)
 
         self.game_mode_radio1 = tk.Radiobutton(self.start_menu_frame, text="Simple", variable=self.game_mode_var, value="Simple")
@@ -83,7 +83,7 @@ class App(tk.Tk):
             #create new window
             self.help_window = tk.Toplevel(self)
             self.help_window.title("Help")
-            self.help_window.geometry("200x300")
+            self.help_window.geometry("225x325")
             self.help_window.iconbitmap( 'SOS.ico')
             
             # Help Menu Frame
@@ -91,7 +91,7 @@ class App(tk.Tk):
             self.help_menu_frame.pack()
             self.frameList.append(self.help_menu_frame)
             # Help Menu Text
-            self.help_menu_text = tk.Label(self.help_menu_frame, text="This is the help menu")
+            self.help_menu_text = tk.Label(self.help_menu_frame, text="SOS Help Menu")
             self.help_menu_text.grid(row=0, column=0, padx=0, pady=0)
             # Simple Game Mode Help Label
             self.simple_game_mode_help_label = tk.Label(self.help_menu_frame, text="Simple Game Mode Instructions")
@@ -164,13 +164,18 @@ class App(tk.Tk):
         self.frame.size = 1
         self.frame.pack(pady=10)
         self.frameList.append(self.frame)
-        #Create 8x8 grid of buttons in frame
+
+
+        #Create nxn grid of buttons in frame
         for row in range(self.board_size):
             for column in range(self.board_size):
                 #Remove Space between buttons
                 self.frame.columnconfigure(column, weight=2)
                 button = ttk.Button(self.frame,text=" ", width=3, command=self.clicked)
                 button.grid(row=row, column=column, padx=0, pady=0)
+
+
+
         #Create controls frame under buttons
         self.controls_frame = tk.Frame(self)
         self.controls_frame.pack(pady=5)
@@ -267,6 +272,8 @@ class App(tk.Tk):
             messagebox.showerror("Error", "Button already clicked")
         if self.board.noOpenSpaces():
             messagebox.showinfo("Game Over", "Game Over")
+
+
 
 
 
