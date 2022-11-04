@@ -256,9 +256,15 @@ class App(tk.Tk):
             #Change Button Text to Player 1's Choice
             button.config(text=self.player1_var.get())
             self.board.placePiece(row, column, token, self.Player)
+            if token == "S":
+                self.board.checkSPlacedPoint(row, column, self.Player)
+            else:
+                self.board.checkOPlacedPoint(row, column, self.Player)
+
+
+
             #Change Player to 2
-            self.Player = 2
-            self.updateCurrentPlayerText()
+
             #update button text color to be red
         elif self.Player == 2 and self.board.getPiece(row,column) == "":
             token = self.player2_var.get()
@@ -266,20 +272,28 @@ class App(tk.Tk):
             button.config(text=self.player2_var.get())
             #Change Player to 1
             self.board.placePiece(row, column, self.player2_var.get(), self.Player)
-            self.Player = 1
-            self.updateCurrentPlayerText()
+            if token == "S":
+                self.board.checkSPlacedPoint(row, column, self.Player)
+            else:
+                self.board.checkOPlacedPoint(row, column, self.Player)
         else:
             messagebox.showerror("Error", "Button already clicked")
-        if self.board.noOpenSpaces():
-            messagebox.showinfo("Game Over", "Game Over")
 
+        if self.gameMode == "Simple":
+            if self.board.checkForSimpleWin():
+                messagebox.showinfo("Winner", "Player " + str(self.Player) + " Wins!")
+                self.reset()
+        else:
+            if self.board.noOpenSpaces():
+                winner = self.board.getGeneralWinner()
+                messagebox.showinfo("Winner", "Player " + str(winner) + " Wins!")
+                self.reset()
 
-
-
-
-
-
-
+        if self.Player == 1:
+            self.Player = 2
+        else:
+            self.Player = 1
+        self.updateCurrentPlayerText()
 
     def update_board_size(self, event):
         tempBoardSize = self.board_size_entry.get()

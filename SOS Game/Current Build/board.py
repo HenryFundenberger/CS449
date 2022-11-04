@@ -17,6 +17,12 @@ class Board:
         self.gameMode = "Simple"
         
 
+    
+    def printPoints(self):
+        print("Player 1: " + str(self.player1Points))
+        print("Player 2: " + str(self.player2Points))
+        print('=====================')
+
 
     def updateGameMode(self, newMode):
         if newMode == "Simple" or newMode == "General":
@@ -69,6 +75,8 @@ class Board:
         self.board = []
         self.boardSize = newSize
         self.openSpaces = self.boardSize * self.boardSize
+        self.player1Points = 0
+        self.player2Points = 0
         self.createBoard()
 
     def updateBoardSize(self, newSize):
@@ -89,3 +97,167 @@ class Board:
         self.boardSize = newSize
         self.resetBoard(int(self.boardSize))
         return self.boardSize, errorMessage
+
+
+    def addPoint(self, player):
+        if player == 1:
+            self.player1Points += 1
+        else:
+            self.player2Points += 1
+
+
+    def checkSPlacedPoint(self, row, column, player):
+        '''
+        [ This is the point->S / /
+        / O /
+        / / S]
+        '''
+        try:
+            if self.board[row+1][column+1][0] == "O":
+                if self.board[row+2][column+2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [->S / /
+        O / /
+        S / / ]
+        '''
+        try:
+            if self.board[row+1][column][0] == "O":
+                if self.board[row+2][column][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [ / / ->S]
+        [ / O /]
+        [ S / /]
+        '''
+        try:
+            if self.board[row+1][column-1][0] == "O":
+                if self.board[row+2][column-2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [S O S <-]
+        '''
+        try:
+            if self.board[row][column-1][0] == "O":
+                if self.board[row][column-2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+
+        '''
+        [S / /
+        / O /
+        / / S <- This is the point]
+        '''
+        try: 
+            if self.board[row-1][column-1][0] == "O":
+                if self.board[row-2][column-2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [S / /
+        O / /
+        -> S / / ]
+        '''
+        try:
+            if self.board[row-1][column][0] == "O":
+                if self.board[row-2][column][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [ / / S]
+        [ / O /]
+        [ -> S / /]
+        '''
+        try:
+            if self.board[row-1][column+1][0] == "O":
+                if self.board[row-2][column+2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [-> S O S]
+        '''
+        try:
+            if self.board[row][column+1][0] == "O":
+                if self.board[row][column+2][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+    
+    def checkOPlacedPoint(self,row,column,player):
+
+        '''
+        [S
+        ->O
+        S]
+        '''
+        try:
+            if self.board[row-1][column][0] == "S":
+                if self.board[row+1][column][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [S O<- S]
+        '''
+        try:
+            if self.board[row][column-1][0] == "S":
+                if self.board[row][column+1][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [S / /
+        / O<- /
+        / / S]
+        '''
+        try:
+            if self.board[row-1][column-1][0] == "S":
+                if self.board[row+1][column+1][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+        '''
+        [/ / S
+        / O<- /
+        S / /]
+        '''
+
+        try:
+            if self.board[row-1][column+1][0] == "S":
+                if self.board[row+1][column-1][0] == "S":
+                    self.addPoint(player)
+        except:
+            pass
+
+
+    def checkForSimpleWin(self):
+        if self.player1Points >= 1 or self.player2Points >= 1:
+            return True
+
+    def getGeneralWinner(self):
+        if self.player1Points > self.player2Points:
+            return 1
+        elif self.player2Points > self.player1Points:
+            return 2
+        else:
+            return 0
