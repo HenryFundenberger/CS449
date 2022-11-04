@@ -281,13 +281,18 @@ class App(tk.Tk):
 
         if self.gameMode == "Simple":
             if self.board.checkForSimpleWin():
-                messagebox.showinfo("Winner", "Player " + str(self.Player) + " Wins!")
+                messagebox.showinfo("Winner", "Player " + str(self.Player) + " Wins!\n Points: " + str(self.board.getPlayerPoints(self.Player)))
+                self.Player = 2
                 self.reset()
-        else:
-            if self.board.noOpenSpaces():
-                winner = self.board.getGeneralWinner()
-                messagebox.showinfo("Winner", "Player " + str(winner) + " Wins!")
-                self.reset()
+
+        if self.board.noOpenSpaces():
+            winner = self.board.getGeneralWinner()
+            if winner == 0:
+                messagebox.showinfo("Winner", "Tie!")
+            else:
+                messagebox.showinfo("Winner", "Player " + str(winner) + " Wins!\n Points: " + str(self.board.getPlayerPoints(winner)))
+            self.Player = 2
+            self.reset()
 
         if self.Player == 1:
             self.Player = 2

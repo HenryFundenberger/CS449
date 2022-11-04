@@ -23,6 +23,11 @@ class Board:
         print("Player 2: " + str(self.player2Points))
         print('=====================')
 
+    def getPlayerPoints(self, player):
+        if player == 1:
+            return self.player1Points
+        else:
+            return self.player2Points
 
     def updateGameMode(self, newMode):
         if newMode == "Simple" or newMode == "General":
@@ -112,10 +117,12 @@ class Board:
         / O /
         / / S]
         '''
+
         try:
             if self.board[row+1][column+1][0] == "O":
                 if self.board[row+2][column+2][0] == "S":
                     self.addPoint(player)
+                    print("->S / / \n/ O /\n/ / S")
         except:
             pass
 
@@ -124,10 +131,12 @@ class Board:
         O / /
         S / / ]
         '''
+        
         try:
             if self.board[row+1][column][0] == "O":
                 if self.board[row+2][column][0] == "S":
                     self.addPoint(player)
+                    print("->S\nO\nS")
         except:
             pass
 
@@ -136,20 +145,24 @@ class Board:
         [ / O /]
         [ S / /]
         '''
+        
         try:
             if self.board[row+1][column-1][0] == "O":
                 if self.board[row+2][column-2][0] == "S":
                     self.addPoint(player)
+                    print("/ / ->S\n/ O /\nS / /")
         except:
             pass
 
         '''
         [S O S <-]
         '''
+        
         try:
             if self.board[row][column-1][0] == "O":
                 if self.board[row][column-2][0] == "S":
                     self.addPoint(player)
+                    print("S O S <-")
         except:
             pass
 
@@ -159,10 +172,12 @@ class Board:
         / O /
         / / S <- This is the point]
         '''
+        
         try: 
             if self.board[row-1][column-1][0] == "O":
                 if self.board[row-2][column-2][0] == "S":
                     self.addPoint(player)
+                    print("S / /\n/ O /\n/ / S<-")
         except:
             pass
 
@@ -171,10 +186,12 @@ class Board:
         O / /
         -> S / / ]
         '''
+        
         try:
             if self.board[row-1][column][0] == "O":
                 if self.board[row-2][column][0] == "S":
                     self.addPoint(player)
+                    print("S\nO\nS<-")
         except:
             pass
 
@@ -183,20 +200,24 @@ class Board:
         [ / O /]
         [ -> S / /]
         '''
+        
         try:
             if self.board[row-1][column+1][0] == "O":
                 if self.board[row-2][column+2][0] == "S":
                     self.addPoint(player)
+                    print("S / /\n O / /\n -> S / /")
         except:
             pass
 
         '''
         [-> S O S]
         '''
+        
         try:
             if self.board[row][column+1][0] == "O":
                 if self.board[row][column+2][0] == "S":
                     self.addPoint(player)
+                    print("-> S O S")
         except:
             pass
     
@@ -207,20 +228,24 @@ class Board:
         ->O
         S]
         '''
+        
         try:
             if self.board[row-1][column][0] == "S":
                 if self.board[row+1][column][0] == "S":
                     self.addPoint(player)
+                    print("S\n->O\nS")
         except:
             pass
 
         '''
         [S O<- S]
         '''
+        
         try:
             if self.board[row][column-1][0] == "S":
                 if self.board[row][column+1][0] == "S":
                     self.addPoint(player)
+                    print(" [S O<- S]")
         except:
             pass
 
@@ -229,10 +254,12 @@ class Board:
         / O<- /
         / / S]
         '''
+        
         try:
             if self.board[row-1][column-1][0] == "S":
                 if self.board[row+1][column+1][0] == "S":
                     self.addPoint(player)
+                    print("[S / / \n/ O<- /\n/ / S]")
         except:
             pass
 
@@ -241,11 +268,12 @@ class Board:
         / O<- /
         S / /]
         '''
-
+        
         try:
             if self.board[row-1][column+1][0] == "S":
                 if self.board[row+1][column-1][0] == "S":
                     self.addPoint(player)
+                    print("[/ / S \n/ O<- /\nS / /]")
         except:
             pass
 
