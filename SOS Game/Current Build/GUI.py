@@ -183,6 +183,20 @@ class App(tk.Tk):
         #Create Player 1 and Player 2 labels
         self.player1_label = tk.Label(self.controls_frame, text="Player 1", font=("Arial", 10))
         self.player1_label.grid(row=0, column=0, padx=10, pady=10)
+        self.player1Robot_label = tk.Label(self.controls_frame, text="Robot", font=("Arial", 10))
+        self.player1Robot_label.grid(row=4, column=0, padx=10, pady=10)
+        #Create check box for player 1 robot
+        self.player1_robot_var = tk.IntVar()
+        self.player1_robot_var.set(self.player1_robot_var.get())
+        self.player1_robot_checkbox = tk.Checkbutton(self.controls_frame, variable=self.player1_robot_var, command=self.reset)
+        self.player1_robot_checkbox.grid(row=5, column=0, padx=10, pady=10)
+        #Create check box for player 2 robot
+        self.player2_robot_var = tk.IntVar()
+        self.player2_robot_var.set(self.player2_robot_var.get())
+        self.player2_robot_checkbox = tk.Checkbutton(self.controls_frame, variable=self.player2_robot_var, command=self.reset)
+        self.player2_robot_checkbox.grid(row=5, column=1, padx=10, pady=10)
+        self.player2Robot_label = tk.Label(self.controls_frame, text="Robot", font=("Arial", 10))
+        self.player2Robot_label.grid(row=4, column=1, padx=10, pady=10)
         #Create 2 Radio Buttons for Player 1
         self.player1_var = tk.StringVar()
         self.player1_var.set("S")
@@ -248,7 +262,8 @@ class App(tk.Tk):
 
         row = button.grid_info()["row"]
         column = button.grid_info()["column"]
-
+        if self.player1_robot_var.get() == 1 and self.Player == 1:
+            print("Player 1 is a robot")
         self.gameMode = self.game_mode_var.get()
         self.board.gameMode = self.gameMode
         if self.Player == 1 and self.board.getPiece(row,column) == "":
