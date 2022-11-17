@@ -15,7 +15,7 @@ from tkinter import ttk
 from tkinter import RIGHT, ttk
 from tkinter import messagebox
 from board import Board
-
+import time
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -62,11 +62,21 @@ class App(tk.Tk):
         # help menu question mark
         self.help_button = tk.Button(self.start_menu_frame, text=" ? ", command=self.buildHelpMenu)
         self.help_button.grid(row=2, column=1, padx=0, pady=0)
-
         self.game_mode_radio1 = tk.Radiobutton(self.start_menu_frame, text="Simple", variable=self.game_mode_var, value="Simple")
         self.game_mode_radio1.grid(row=3, column=0, padx=0, pady=0)
         self.game_mode_radio2 = tk.Radiobutton(self.start_menu_frame, text="General", variable=self.game_mode_var, value="General")
         self.game_mode_radio2.grid(row=4, column=0, padx=0, pady=0)
+
+        # player 1 or 2 are robot checkboxes
+        self.player1_robot_var = tk.IntVar()
+        self.player1_robot_var.set(0)
+        self.player2_robot_var = tk.IntVar()
+        self.player2_robot_var.set(0)
+        self.player1_robot_checkbox = tk.Checkbutton(self.start_menu_frame, text="Player 1 is a robot", variable=self.player1_robot_var)
+        self.player1_robot_checkbox.grid(row=5, column=0, padx=0, pady=0)
+        self.player2_robot_checkbox = tk.Checkbutton(self.start_menu_frame, text="Player 2 is a robot", variable=self.player2_robot_var)
+        self.player2_robot_checkbox.grid(row=6, column=0, padx=0, pady=0)
+
 
 
         # Get board size slider value
@@ -75,11 +85,14 @@ class App(tk.Tk):
         y = self.game_mode = self.game_mode_var.get()
         #Start Button
         self.start_button = tk.Button(self.start_menu_frame, text="Start", command=self.buildMainGame)
-        self.start_button.grid(row=6, column=0, padx=0, pady=0)
+        self.start_button.grid(row=7, column=0, padx=0, pady=0)
         self.start_menu_frame.pack()
 
 
     def buildHelpMenu(self):
+
+        
+            print(self.player1_robot_var.get())
             #create new window
             self.help_window = tk.Toplevel(self)
             self.help_window.title("Help")
@@ -119,6 +132,7 @@ class App(tk.Tk):
 
 
     def buildMainGame(self):
+        
         self.gameStarted = True
         # Delete Start Menu
         self.board_size = self.board_size_slider.get()
@@ -186,12 +200,10 @@ class App(tk.Tk):
         self.player1Robot_label = tk.Label(self.controls_frame, text="Robot", font=("Arial", 10))
         self.player1Robot_label.grid(row=4, column=0, padx=10, pady=10)
         #Create check box for player 1 robot
-        self.player1_robot_var = tk.IntVar()
         self.player1_robot_var.set(self.player1_robot_var.get())
         self.player1_robot_checkbox = tk.Checkbutton(self.controls_frame, variable=self.player1_robot_var, command=self.reset)
         self.player1_robot_checkbox.grid(row=5, column=0, padx=10, pady=10)
         #Create check box for player 2 robot
-        self.player2_robot_var = tk.IntVar()
         self.player2_robot_var.set(self.player2_robot_var.get())
         self.player2_robot_checkbox = tk.Checkbutton(self.controls_frame, variable=self.player2_robot_var, command=self.reset)
         self.player2_robot_checkbox.grid(row=5, column=1, padx=10, pady=10)
@@ -222,6 +234,84 @@ class App(tk.Tk):
         self.board.updateGameMode(self.game_mode_var.get())
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
 
+        randomSpace = self.board.chooseRandomEmptySpace()
+        randomToken = self.board.getRandomToken()
+
+        # if player 1 is a robot, make a move
+        if self.player1_robot_var.get() == 1:
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, 1)
+            
+
+
+    def robotMoves(self, row, column, token, player):
+        self.gameMode = self.game_mode_var.get()
+        # get the button at the row and column
+        button = self.frame.grid_slaves(row=row, column=column)[0]
+        # get the token of the player
+        if self.Player == 1:
+            self.player1_var.set(token)
+        else:
+            self.player2_var.set(token)
+
+        # set the button text to the token
+        button.config(text=token)
+        # Update self.player1_var 
+
+        # check if the game is over
+        self.board.placePiece(row, column, token, self.Player)
+        if token == "S":
+                self.board.checkSPlacedPoint(row, column, self.Player)
+        else:
+            self.board.checkOPlacedPoint(row, column, self.Player)
+        self.board.printBoard()
+
+        # if player = 1 then player = 2
+        if self.Player == 1:
+            self.Player = 2
+        else:
+            self.Player = 1
+
+        self.updateCurrentPlayerText()
+
+
+
+        # check for wins   
+        if self.gameMode == "Simple":
+            if self.board.checkForSimpleWin():
+                messagebox.showinfo("Winner", "Player " + str(self.Player) + " Wins!\n Points: " + str(self.board.getPlayerPoints(self.Player)))
+                self.Player = 2
+                self.reset()
+
+        if self.board.noOpenSpaces():
+            print("THIS IS A TEST")
+            winner = self.board.getGeneralWinner()
+            if winner == 0:
+                messagebox.showinfo("Winner", "Tie!")
+            else:
+                messagebox.showinfo("Winner", "Player " + str(winner) + " Wins!\n Points: " + str(self.board.getPlayerPoints(winner)))
+            self.Player = 2
+            self.reset()
+
+
+        # if current player is a robot, make a move
+        if self.Player == 1 and self.player1_robot_var.get() == 1:
+            randomSpace = self.board.chooseRandomEmptySpace()
+            randomToken = self.board.getRandomToken()
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, player)
+        elif self.Player == 2 and self.player2_robot_var.get() == 1:
+            randomSpace = self.board.chooseRandomEmptySpace()
+            randomToken = self.board.getRandomToken()
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, player)
+
+        
+
+
 
     def updateCurrentPlayerText(self):
         #Update Current Player Text
@@ -250,6 +340,14 @@ class App(tk.Tk):
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
         self.board.updateGameMode(self.game_mode_var.get())
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
+        self.gameMode = self.game_mode_var.get()
+        # if player 1 is a robot, make a move
+        if self.player1_robot_var.get() == 1:
+            randomSpace = self.board.chooseRandomEmptySpace()
+            randomToken = self.board.getRandomToken()
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, 1)
 
         
         
@@ -262,8 +360,6 @@ class App(tk.Tk):
 
         row = button.grid_info()["row"]
         column = button.grid_info()["column"]
-        if self.player1_robot_var.get() == 1 and self.Player == 1:
-            print("Player 1 is a robot")
         self.gameMode = self.game_mode_var.get()
         self.board.gameMode = self.gameMode
         if self.Player == 1 and self.board.getPiece(row,column) == "":
@@ -314,6 +410,19 @@ class App(tk.Tk):
         else:
             self.Player = 1
         self.updateCurrentPlayerText()
+
+        if self.Player == 1 and self.player1_robot_var.get() == 1:
+            randomSpace = self.board.chooseRandomEmptySpace()
+            randomToken = self.board.getRandomToken()
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, self.Player)
+        elif self.Player == 2 and self.player2_robot_var.get() == 1:
+            randomSpace = self.board.chooseRandomEmptySpace()
+            randomToken = self.board.getRandomToken()
+            row = randomSpace[0]
+            column = randomSpace[1]
+            self.robotMoves(row, column, randomToken, self.Player)
 
     def update_board_size(self, event):
         tempBoardSize = self.board_size_entry.get()

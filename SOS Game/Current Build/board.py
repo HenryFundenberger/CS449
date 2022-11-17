@@ -18,6 +18,27 @@ class Board:
         
 
     
+    # get random token either S or O
+    def getRandomToken(self):
+        import random
+        tokens = ["S", "O"]
+        return random.choice(tokens)
+
+    # Get list of all empty spaces
+    def getEmptySpaces(self):
+        emptySpaces = []
+        for row in range(self.boardSize):
+            for column in range(self.boardSize):
+                if self.board[row][column] == "":
+                    emptySpaces.append([row, column])
+        return emptySpaces
+
+    # Def choose random empty space
+    def chooseRandomEmptySpace(self):
+        import random
+        emptySpaces = self.getEmptySpaces()
+        return random.choice(emptySpaces)
+
     def printPoints(self):
         print("Player 1: " + str(self.player1Points))
         print("Player 2: " + str(self.player2Points))
