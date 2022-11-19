@@ -57,7 +57,7 @@ class Board:
 
     def getWindowSize(self, boardSize):
         #Dictionary for boardSizes 3 - 10 that hold a list of width and height for the window
-        windowSizeDict = {3: [280, 450], 4: [280, 450], 5: [320, 500], 6: [330, 520], 7: [385, 526], 8: [440, 550], 9: [495, 560], 10: [550, 620]}
+        windowSizeDict = {3: [280, 500], 4: [280, 500], 5: [320, 550], 6: [330, 570], 7: [385, 576], 8: [440, 600], 9: [495, 610], 10: [550, 670]}
         width = windowSizeDict[boardSize][0]
         height = windowSizeDict[boardSize][1]
         return [width, height]
@@ -302,6 +302,8 @@ class Board:
     def checkForSimpleWin(self):
         if self.player1Points >= 1 or self.player2Points >= 1:
             return True
+        else:
+            return False
 
     def getGeneralWinner(self):
         if self.player1Points > self.player2Points:

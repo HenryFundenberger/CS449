@@ -82,6 +82,7 @@ def test_StartSimpleGame():
     testApp.mainloop()
     assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 10 and testApp.board.gameMode == "Simple"
 
+
 def test_SimpleGameIsOverWin():
     test = UnitTestClass(3)
     test.board.placePiece(0, 0, "S", 1)
@@ -163,3 +164,24 @@ def test_GeneralGameIsOverTie():
     test.board.checkSPlacedPoint(2,2,1)
     if(test.board.noOpenSpaces()):
         assert test.board.getGeneralWinner() == 0
+
+def test_StartGameWithOneRobot():
+    testApp = App()
+    testApp.board_size_slider.set(5)
+    testApp.game_mode_var.set("General")
+    testApp.player1_robot_var.set(1)
+    testApp.after(100, lambda: testApp.start_button.invoke())
+    testApp.after(200, lambda: testApp.destroy())
+    testApp.mainloop()
+    assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 5 and testApp.board.gameMode == "General" and testApp.OneRobot == 1 and testApp.TwoRobots == 0
+
+def test_StartGameWithTwoRobots():
+    testApp = App()
+    testApp.board_size_slider.set(5)
+    testApp.game_mode_var.set("General")
+    testApp.player1_robot_var.set(1)
+    testApp.player2_robot_var.set(1)
+    testApp.after(100, lambda: testApp.start_button.invoke())
+    testApp.after(200, lambda: testApp.destroy())
+    testApp.mainloop()
+    assert testApp.gameStarted == True and testApp.board.board != [] and testApp.board.boardSize == 5 and testApp.board.gameMode == "General" and testApp.OneRobot == 0 and testApp.TwoRobots == 1
