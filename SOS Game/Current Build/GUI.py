@@ -16,6 +16,7 @@ from tkinter import RIGHT, ttk
 from tkinter import messagebox
 from board import Board
 import time
+import datetime
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -32,6 +33,8 @@ class App(tk.Tk):
         self.board_size = 5
         self.CurrentPlayerLabel = tk.Label(self, text="Playing: Blue")
         self.iconbitmap( 'SOS.ico')
+        #For recording a game
+        self.recordedGameList = []
         # Our board object refernce to control the game logic
         self.board = Board(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
@@ -80,13 +83,21 @@ class App(tk.Tk):
 
 
 
+
+        # row = 7 Record Game Checkbox using var self.record
+        self.record_var = tk.IntVar()
+        self.record_var.set(0)
+        self.record_checkbox = tk.Checkbutton(self.start_menu_frame, text="Record Game", variable=self.record_var)
+        self.record_checkbox.grid(row=7, column=0, padx=0, pady=0)
+
+
         # Get board size slider value
         x = self.board_size_slider.get()
         # Get board game mode
         y = self.game_mode = self.game_mode_var.get()
         #Start Button
         self.start_button = tk.Button(self.start_menu_frame, text="Start", command=self.buildMainGame)
-        self.start_button.grid(row=7, column=0, padx=0, pady=0)
+        self.start_button.grid(row=8, column=0, padx=0, pady=0)
         self.start_menu_frame.pack()
 
 
@@ -228,7 +239,15 @@ class App(tk.Tk):
         self.player2_label.grid(row=0, column=1, padx=10, pady=10)
         # Reset Board
         self.reset_button = tk.Button(self.controls_frame,text="Reset", command=self.reset)
-        self.reset_button.grid(row=10, column=10, padx=0, pady=0)
+        self.reset_button.grid(row=10, column=1, padx=0, pady=0)
+
+
+    
+        # add record checkbox
+        self.record_var.set(self.record_var.get())
+        self.record_checkbox = tk.Checkbutton(self.controls_frame, variable=self.record_var,  text="Record Game", command=self.reset)
+        self.record_checkbox.grid(row=10, column=0, padx=10, pady=10)
+
 
         #upate board geometry
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
@@ -245,6 +264,13 @@ class App(tk.Tk):
             self.TwoRobots = True
         
 
+        if self.record_var.get() == 1:
+            self.recordedGameList.append(self.game_mode_var.get())
+            self.recordedGameList.append(self.board_size)
+            # 0 For human, 1 for robot
+            self.recordedGameList.append(self.player1_robot_var.get())
+            self.recordedGameList.append(self.player2_robot_var.get())
+
         # if player 1 is a robot, make a move
         if self.player1_robot_var.get() == 1:
             row = randomSpace[0]
@@ -254,6 +280,7 @@ class App(tk.Tk):
 
 
     def robotMoves(self, row, column, token, player):
+        
         self.gameMode = self.game_mode_var.get()
         # get the button at the row and column
         button = self.frame.grid_slaves(row=row, column=column)[0]
@@ -262,6 +289,8 @@ class App(tk.Tk):
             self.player1_var.set(token)
         else:
             self.player2_var.set(token)
+
+
 
         # set the button text to the token
         button.config(text=token)
@@ -273,9 +302,11 @@ class App(tk.Tk):
                 self.board.checkSPlacedPoint(row, column, self.Player)
         else:
             self.board.checkOPlacedPoint(row, column, self.Player)
-        self.board.printBoard()
 
 
+        # record game add
+        if self.record_var.get() == 1:
+            self.recordedGameList.append([row, column, token, self.Player])
 
 
 
@@ -304,6 +335,8 @@ class App(tk.Tk):
             self.reset()
 
 
+    
+
             # if player = 1 then player = 2
         if self.Player == 1:
             self.Player = 2
@@ -311,6 +344,8 @@ class App(tk.Tk):
             self.Player = 1
 
         self.updateCurrentPlayerText()
+
+        
 
         # if current player is a robot, make a move
         if self.Player == 1 and self.player1_robot_var.get() == 1:
@@ -326,7 +361,7 @@ class App(tk.Tk):
             column = randomSpace[1]
             self.robotMoves(row, column, randomToken, player)
 
-        
+
 
 
 
@@ -340,6 +375,17 @@ class App(tk.Tk):
 
 
     def reset(self):
+
+        if self.record_var.get() == 1:
+            # Get Current Date and Time
+            now = datetime.datetime.now()
+            fileTitle = str(self.game_mode_var.get()) + "_" + str(self.board_size) + "_" + str(now.strftime("%m-%d-%Y_%H-%M-%S")) + ".txt"
+            file = open(fileTitle, "w")
+            for item in self.recordedGameList:
+                file.write(str(item) + "\n")
+            file.close()
+
+
         #Reset Board
         #Delete all buttons
         for widget in self.frame.winfo_children():
@@ -356,12 +402,19 @@ class App(tk.Tk):
         self.Player = 1
         self.updateCurrentPlayerText()
         self.reset_button = tk.Button(self.controls_frame, text="Reset", command=self.reset)
-        self.reset_button.grid(row=10, column=10, padx=0, pady=0)
+        self.reset_button.grid(row=10, column=1, padx=0, pady=0)
         self.board.resetBoard(self.board_size)
         self.boardWidth, self.boardHeight = self.board.getWindowSize(self.board_size)
         self.board.updateGameMode(self.game_mode_var.get())
         self.geometry(str(self.boardWidth) + "x" + str(self.boardHeight))
         self.gameMode = self.game_mode_var.get()
+        self.recordedGameList = []
+        self.recordedGameList.append(self.game_mode_var.get())
+        self.recordedGameList.append(self.board_size)
+        # 0 For human, 1 for robot
+        self.recordedGameList.append(self.player1_robot_var.get())
+        self.recordedGameList.append(self.player2_robot_var.get())
+
         # if player 1 is a robot, make a move
         if self.player1_robot_var.get() == 1 and self.Player == 1:
             randomSpace = self.board.chooseRandomEmptySpace()
@@ -369,6 +422,7 @@ class App(tk.Tk):
             row = randomSpace[0]
             column = randomSpace[1]
             self.robotMoves(row, column, randomToken, 1)
+
 
         
         
@@ -392,6 +446,9 @@ class App(tk.Tk):
                 self.board.checkSPlacedPoint(row, column, self.Player)
             else:
                 self.board.checkOPlacedPoint(row, column, self.Player)
+            if self.record_var.get() == 1:
+                self.recordedGameList.append([row, column, token, self.Player])
+
 
 
 
@@ -408,12 +465,17 @@ class App(tk.Tk):
                 self.board.checkSPlacedPoint(row, column, self.Player)
             else:
                 self.board.checkOPlacedPoint(row, column, self.Player)
+            if self.record_var.get() == 1:
+                self.recordedGameList.append([row, column, token, self.Player])
+
         else:
             messagebox.showerror("Error", "Button already clicked")
             if self.Player == 1:
                 self.Player = 2
+
             else:
                 self.Player = 1
+        print(self.recordedGameList)
 
         if self.gameMode == "Simple":
             if self.board.checkForSimpleWin():
@@ -421,6 +483,9 @@ class App(tk.Tk):
                     colorPlayer = "Blue"
                 else:
                     colorPlayer = "Red"
+                # Open new text file in current directory
+
+
                 messagebox.showinfo("Winner", colorPlayer + " Wins!\n Points: " + str(self.board.getPlayerPoints(self.Player)))
                 self.Player = 2
                 self.reset()
@@ -443,6 +508,7 @@ class App(tk.Tk):
         else:
             self.Player = 1
         self.updateCurrentPlayerText()
+
 
         if self.Player == 1 and self.player1_robot_var.get() == 1:
             randomSpace = self.board.chooseRandomEmptySpace()
