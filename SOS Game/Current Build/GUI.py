@@ -124,6 +124,7 @@ class App(tk.Tk):
             # make text wrap
             self.seperator = ttk.Separator(self.help_menu_frame, orient=HORIZONTAL)
             self.seperator.grid(row=2, column=0, padx=0, pady=0)
+            # Simple Game Mode Help Text
             self.simple_game_mode_help_text = tk.Label(self.help_menu_frame, text="In a simple game, users take turn placing down their S or O token on the board. If a player places down a token and creates a SOS in any direction, they get a point. The winner of the game is the first player to make an SOS.", wraplength=200)
             self.simple_game_mode_help_text.grid(row=2, column=0, padx=0, pady=0)
 
@@ -133,6 +134,7 @@ class App(tk.Tk):
             # make text wrap
             self.seperator = ttk.Separator(self.help_menu_frame, orient=HORIZONTAL)
             self.seperator.grid(row=4, column=0, padx=0, pady=0)
+            # General Game Mode Help Text
             self.general_game_mode_help_text = tk.Label(self.help_menu_frame, text="In a general game, users take turn placing down their S or O token on the board. When all the positions on the board have been filled by a token, the winner of the game is whoever made the most SOS's and obtained the most points.", wraplength=200)
             self.general_game_mode_help_text.grid(row=4, column=0, padx=0, pady=0)
 
